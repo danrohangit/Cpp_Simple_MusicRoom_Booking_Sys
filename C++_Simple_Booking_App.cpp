@@ -5,8 +5,12 @@
 #include <time.h>;
 #include <string>;
 #include <stdio.h>;
+#include <vector>;
+#include <algorithm>;
+#include <stdlib.h>
 
 //https://www.javatpoint.com/how-to-split-strings-in-cpp
+//https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects
 
 // # TODO
 
@@ -16,7 +20,7 @@
 
 using namespace std;
 
- class Records{
+/* class Records{
     public:
         double theKey;
         int dD;
@@ -24,13 +28,43 @@ using namespace std;
         int yY;
         string name;
         bool checkedIn;
-}; 
+}; */
+
+struct Records
+{
+    int theKey;
+    int dD;
+    int mM;
+    int yY;
+    string name;
+    bool checkedIn;
+
+    Records(double k, int d, int m, int y, string  n, bool cI) : theKey(k), dD(d), mM(m), yY(y), name(n), checkedIn(cI) {}
+};
+
+
+// -- Start of extra functions -------------------------------------------------------------------------
+struct compareKeys
+{
+    inline bool operator() (const Records& struct1, const Records& struct2)
+    {
+        return (struct1.theKey < struct2.theKey);
+    }
+};
 
 string checkDate(string theDateElems[]){
 
-    time_t now = time(0);
+    //time_t now = time(0);
 
-    string dt = ctime(&now);
+    //string dt = ctime(&now);
+
+    time_t rawtime;
+    struct tm * timeinfo;
+
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+
+    string dt = asctime(timeinfo);
 
     string delim = " ";
 
@@ -49,12 +83,12 @@ string checkDate(string theDateElems[]){
             if (token1 == theMonths[i]){
                 if (i<10){
                     string temp0 = "0";
-                    string temp1 = to_string(i);
+                    string temp1 = to_string(i+1);
 
                     token1 = temp0 + temp1;
                 }
                 else{
-                    token1 = to_string(i);
+                    token1 = to_string(i+1);
                 }
             }
         }
@@ -148,12 +182,39 @@ double retrieveBookSec(int tempYear,int tempMonth, int tempDate){
 
 }
 
-void addBooking(string userOption){
+// -- END of extra functions -------------------------------------------------------------------------
+
+vector<Records> checkInBooking(string userOption,vector<Records>vec){
+
+    system("cls");
+
+    cout << "Check-In Musicians\n";
+    cout << "-------------------\n";     
+
+    string theDateElems[5];
+
+    auto curDateResult = checkDate(theDateElems); 
+    
+    int curDay = stoi(theDateElems[1]);
+    int curMonth = stoi(theDateElems[2]);
+    int curYear = stoi(theDateElems[4]);
+
+    //cout << "\n" << curDay << "\n" << curMonth << "\n" << curYear << "\n"; 
+
+    for (const auto& element : vec){
+        cout << "\n" << element.theKey << "\n";
+    };
+
+    string tempTest;
+    cin >> tempTest;        
+}
+
+vector<Records> addBooking(string userOption,vector<Records>vec){
+
+    system("cls");
 
     cout << "Book Musicians\n";
-    cout << "-------------------\n";
-
-    Records objElem;  
+    cout << "-------------------\n";  
 
     int tempDate;
     int tempMonth;
@@ -193,31 +254,37 @@ void addBooking(string userOption){
 
         int newBookingSecs = int(bookingSecs);
 
-        cout << "Current secs" << newCurSecs;
-        cout << "\nbooking secs\n" << newBookingSecs;
+        //cout << "Current secs" << newCurSecs;
+        //cout << "\nbooking secs\n" << newBookingSecs;
 
         if (newBookingSecs < newCurSecs){
             cout << "\nInvalid Booking Date. Can only book same day or future day\n\n";             
         }
         else{
             cout << "\nInsert Name of Musician: ";
-            cin >> tempName;
+            //cin >> tempName;
+
+            tempName = "Jay";
 
             tempCheckedIn = false;
 
-/*          objElem.dD = tempDate;
-            objElem.mM = tempMonth;
-            objElem.yY = tempYear;
-            objElem.name = tempName;
-            objElem.checkedIn = tempCheckedIn;
+            vec.push_back(Records(newBookingSecs, tempDate, tempMonth, tempYear, tempName, tempCheckedIn));
+            //vec.push_back(Records(newBookingSecs - 100, 6, tempMonth, tempYear, "Tom", tempCheckedIn));
+            //vec.push_back(Records(newBookingSecs - 350, 5, tempMonth, tempYear, "Harry", tempCheckedIn));
 
-            cout << "\nTempDate: " << objElem.dD;
-            cout << "\nTempMonth: " << objElem.mM;
-            cout << "\nTempYear: " << objElem.yY;
-            cout << "\nTempName: " << objElem.name;
-            cout << "\nTempCheckedIn: " << objElem.checkedIn; */
+            sort(vec.begin(), vec.end(), compareKeys());
 
-            //
+            system("cls");
+
+            cout << "Added booking to database: " << tempDate << "-" << tempMonth << "-" << tempYear <<
+            "-" << tempName << "\n\n"; 
+
+            //for (const auto& element : vec){
+            //    cout << "\n" << element.theKey << "\n";
+            //};
+
+            return vec;
+
         };
 
     };     
@@ -225,7 +292,7 @@ void addBooking(string userOption){
 }
 
 void startMenu(string userOption){
-    cout << "Music Room Booking System: \n";
+    cout << "Music Room Booking System \n";
     cout << "-------------------------------------------\n";
     cout << "1) Book room for musicians\n";
     cout << "2) Check-In Musicians\n";
@@ -239,7 +306,9 @@ void startMenu(string userOption){
 
 int main(){
 
-    string userOption = "";   
+    string userOption = "";
+
+    vector<Records>vec;   
 
     while (userOption != "0"){
 
@@ -249,7 +318,19 @@ int main(){
         cout << "\n";
 
         if (userOption == "1"){
-            addBooking(userOption);
+
+            system("cls");
+
+            vec = addBooking(userOption,vec);
+           
+        }
+
+        else if (userOption == "2"){
+
+            system("cls");
+
+            vec = checkInBooking(userOption,vec);
+
         }
     }
 
