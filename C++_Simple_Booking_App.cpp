@@ -15,9 +15,8 @@
 
 // # TODO
 
-// Use vector to store objects
-// Use booking date in seconds as "key"(not exactly key) so that vector can be sorted according to date
-// Divide the seconds by 100k or 1mil or something to make the number smaller or no need if it makes no difference
+// Fix while operators for check in and see details
+// Supposed to be && not || dont know why
 
 using namespace std;
 
@@ -185,6 +184,112 @@ double retrieveBookSec(int tempYear,int tempMonth, int tempDate){
 
 // -- END of extra functions -------------------------------------------------------------------------
 
+vector<Records> displayBooking(string userOption,vector<Records>vec){
+    system("cls");
+
+    int tempDate,tempMonth,tempYear;
+
+    cout << "Check Bookings\n";
+    cout << "-------------------\n";    
+
+    cout << "\nEnter Date in DD format: ";
+    cin >> tempDate;
+
+    cout << "\nEnter Month in MM format: ";
+    cin >> tempMonth;
+
+    cout << "\nEnter Year in YYYY format: ";
+    cin >> tempYear;
+
+    double curSeconds = retrieveBookSec(tempYear,tempMonth,tempDate);
+
+    int newCurSecs = int(curSeconds);
+
+    int vectorSize = vec.size();
+
+    int first = 0;
+
+    if (first > vectorSize){
+        system("cls");
+        cout << "\nBooking not found\n";        
+    }
+    else if (vectorSize == 1){
+        if (vec[0].theKey == newCurSecs){
+            system("cls");
+
+            string tempBool;
+
+            if (vec[0].checkedIn == 0){
+                tempBool = "No";
+            }
+
+            else{
+                tempBool = "Yes";
+            };
+
+            cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";            
+
+        }
+
+        else{
+            system("cls");
+            cout << "\nBooking not found\n";             
+        };
+    }
+
+    else{
+        int mid = vectorSize/2;
+        mid = ceil(mid);
+
+        bool elementFound = false;
+
+        int minusOrPlus = 0;        
+
+        while (mid != -1 || mid != vectorSize + 1){
+
+            //cout << "\nMid: " << mid << "\n"; 
+
+            if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
+
+                system("cls");
+
+                cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << "\n";
+
+                return vec;   
+
+                break;             
+            }
+
+            else{
+                if (minusOrPlus == 0){
+                    if (vec[mid].theKey > newCurSecs){
+                        minusOrPlus = 1;
+                    }
+
+                    else{
+                        minusOrPlus = 2;
+                    };
+                }
+
+                else{
+                    if (minusOrPlus == 1){
+                        mid = mid - 1;
+                    }
+
+                    else{
+                        mid = mid + 1;
+                    };
+                };
+            };
+
+        }
+
+        system("cls");
+        cout << "\nBooking not found\n";        
+    };
+
+}
+
 vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
     system("cls");
@@ -250,11 +355,15 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
         int mid = vectorSize/2;
         mid = ceil(mid);
 
+        mid = int(mid);
+
         bool elementFound = false;
 
-        while (mid != -1 && elementFound == false || mid != vectorSize + 1 && elementFound == false){
+        int minusOrPlus = 0;
 
-            //cout << "\nMid: " << mid << "\n"; 
+        while (mid != -1 || mid != vectorSize + 1){
+
+            cout << "\nMid: " << mid << "\n"; 
 
             if (vec[mid].dD == curDay && vec[mid].mM == curMonth && vec[mid].yY == curYear && vec[mid].name ==
             tempName){
@@ -265,22 +374,37 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
                 cout << "\nBooking found and guest checked in\n";
 
-                elementFound = true;
+                return vec;   
 
-                return vec;                
+                break;             
             }
 
             else{
-                if (vec[mid].theKey > newCurSecs){
-                    mid = mid - 1;
+
+                if (minusOrPlus == 0){
+                    if (vec[mid].theKey > newCurSecs){
+                        minusOrPlus = 1;
+                    }
+
+                    else{
+                        minusOrPlus = 2;
+                    }
                 }
 
                 else{
-                    mid = mid + 1;
-                };
+
+                    if (minusOrPlus == 1){
+                        mid = mid - 1;
+                    }
+
+                    else{
+                        mid = mid + 1;
+                    }
+                }
+
             };
 
-        }
+        };
 
 /*         while (first <= vectorSize){
             int mid = (first+vectorSize)/2;
@@ -401,7 +525,7 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
 
             return vec;
 
-        };
+        }
 
     };     
 
@@ -446,6 +570,14 @@ int main(){
             system("cls");
 
             vec = checkInBooking(userOption,vec);
+
+        }
+
+        else if (userOption == "3"){
+
+            system("cls");
+
+            vec = displayBooking(userOption,vec);
 
         }
     }
