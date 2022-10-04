@@ -11,25 +11,12 @@
 #include <cmath>;
 #include <cctype>;
 #include <clocale>;
+#include <bits/stdc++.h>;
 
 //https://www.javatpoint.com/how-to-split-strings-in-cpp
 //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects
 
-// # TODO
-
-// Fix check in
-
 using namespace std;
-
-/* class Records{
-    public:
-        double theKey;
-        int dD;
-        int mM;
-        int yY;
-        string name;
-        bool checkedIn;
-}; */
 
 struct Records
 {
@@ -54,10 +41,6 @@ struct compareKeys
 };
 
 string checkDate(string theDateElems[]){
-
-    //time_t now = time(0);
-
-    //string dt = ctime(&now);
 
     time_t rawtime;
     struct tm * timeinfo;
@@ -104,38 +87,6 @@ string checkDate(string theDateElems[]){
     theDateElems[4] = dt;   
 
 }
-
-/* void addBooking(string userOption){
-
-    cout << "Book Musicians\n";
-    cout << "-------------------\n";
-
-    list<theList> objElem;
-
-    string theDateElems[5];
-
-    int tempDate;
-    int tempMonth;
-    int tempYear;
-    string tempName;
-    bool tempCheckedIn;
-
-    auto curDateResult = checkDate(theDateElems);
-
-    int curMonth = stoi(theDateElems[1]);
-    int curDay = stoi(theDateElems[2]);
-    int curYear = stoi(theDateElems[4]); 
-
-    cout << "\nInsert MONTH in MM format!: ";
-    cin >> tempMonth;
-
-    cout << "\nInsert DATE in DD format!: ";
-    cin >> tempDate;    
-
-    cout << "\nInsert YEAR in YYYY format!: ";
-    cin >> tempYear;          
-
-} */
 
 double retrieveCurSec(){
     time_t timer;
@@ -196,11 +147,35 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
     cout << "\nEnter Date in DD format: ";
     cin >> tempDate;
 
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempDate = 9999;   
+        cout << "\nInvalid Date! Try again! Insert Date in DD format!: ";              
+        cin >> tempDate;
+    }     
+
     cout << "\nEnter Month in MM format: ";
     cin >> tempMonth;
 
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempMonth = 9999;   
+        cout << "\nInvalid Month! Try again! Insert Month in MM format!: ";              
+        cin >> tempMonth;
+    }     
+
     cout << "\nEnter Year in YYYY format: ";
     cin >> tempYear;
+
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempYear = 9999;   
+        cout << "\nInvalid YEAR! Try again! Insert YEAR in YYYY format!: ";              
+        cin >> tempYear;
+    }     
 
     double curSeconds = retrieveBookSec(tempYear,tempMonth,tempDate);
 
@@ -212,7 +187,7 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
 
     if (first > vectorSize){
         system("cls");
-        cout << "\nBooking not found\n";        
+        cout << "\nBooking not found\n\n";        
 
         return vec;
     }
@@ -230,7 +205,7 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
                 tempBool = "Yes";
             };
 
-            cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";
+            cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n\n";
 
             return vec;            
 
@@ -250,50 +225,71 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
 
         bool elementFound = false;
 
-        int minusOrPlus = 0;        
+        int minusOrPlus = 0;
+
+        int tempMid = mid;
+
+        int count = 0;
+
+        while (vec[tempMid+1].theKey == vec[tempMid].theKey){
+            tempMid = tempMid + 1;
+            mid = mid + 1;
+        }
+
+        system("cls");                
 
         while (mid != -1 && mid != vectorSize + 1){
-
-            //cout << "\nMid: " << mid << "\n"; 
-
-            if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
-
-                system("cls");
-
-                cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";
-
-                return vec;   
-             
-            }
-
-            else{
-                if (minusOrPlus == 0){
-                    if (vec[mid].theKey > newCurSecs){
-                        minusOrPlus = 1;
-                    }
-
-                    else{
-                        minusOrPlus = 2;
-                    };
+            
+            if (minusOrPlus == 0){
+                if (vec[mid].theKey >= newCurSecs){
+                    minusOrPlus = 1;
                 }
 
                 else{
-                    if (minusOrPlus == 1){
-                        mid = mid - 1;
+                    minusOrPlus = 2;
+                };
+            }
+
+            else{                     
+
+                if (minusOrPlus == 1){
+
+                    if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
+
+                        elementFound = true;
+
+                        cout << "\nDate: " << vec[mid].dD << " Month: " << vec[mid].mM << " Year: " << vec[mid].yY << " Name: " << vec[mid].name << " Checked-In: " << vec[mid].checkedIn << "\n";   
+                
                     }
 
-                    else{
-                        mid = mid + 1;
-                    };
+                    mid = mid - 1;
+                }
+
+                else{
+
+                    if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
+
+                        elementFound = true;
+
+                        cout << "\nDate: " << vec[mid].dD << " Month: " << vec[mid].mM << " Year: " << vec[mid].yY << " Name: " << vec[mid].name << " Checked-In: " << vec[mid].checkedIn << "\n";   
+                
+                    }
+
+                    mid = mid + 1;
                 };
             };
-
+            
         }
 
-        system("cls");
-        cout << "\nBooking not found\n";    
+        if (elementFound == true){
+            cout << "\n";
+            return vec;
+        }
+        else{
+            cout << "\nBooking not found\n\n";    
 
-        return vec;    
+            return vec;
+        }    
     };
 
 }
@@ -313,10 +309,6 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
     int curMonth = stoi(theDateElems[1]);
     int curDay = stoi(theDateElems[2]);
 
-    //for (const auto& element : vec){
-    //    cout << "\n" << element.theKey << "\n";
-    //};
-
     string tempName;
 
     cout << "\nEnter Name: ";
@@ -331,10 +323,6 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
     int first = 0;
 
-    //double curSeconds = retrieveCurSec();
-
-    //int newCurSecs = int(curSeconds);
-
     double curSeconds = retrieveBookSec(curYear,curMonth,curDay);
 
     int newCurSecs = int(curSeconds);    
@@ -342,7 +330,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
     if (first > vectorSize){
 
         system("cls");
-        cout << "\nBooking not found\n";
+        cout << "\nBooking not found\n\n";
 
         return vec;
     }
@@ -354,7 +342,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
             system("cls");
 
-            cout << "\nBooking found and guest checked in\n";
+            cout << "\nBooking found and guest checked in\n\n";
 
             return vec;
         }
@@ -362,7 +350,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
         else{
             system("cls");
 
-            cout << "\n Booking not found!\n";
+            cout << "\n Booking not found!\n\n";
 
             return vec;
         };
@@ -378,18 +366,22 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
         int minusOrPlus = 0;
 
+        int tempMid = mid;
+
+        while (vec[tempMid+1].theKey == vec[tempMid].theKey){
+            tempMid = tempMid + 1;
+            mid = mid + 1;
+        }        
+
         while (mid != -1 && mid != vectorSize + 1){
 
-            cout << "\nMid: " << mid << "\n"; 
-
-            if (vec[mid].dD == curDay && vec[mid].mM == curMonth && vec[mid].yY == curYear && vec[mid].name ==
-            tempName){
+            if (vec[mid].dD == curDay && vec[mid].mM == curMonth && vec[mid].yY == curYear && vec[mid].name == tempName){
 
                 vec[mid].checkedIn = true;
 
                 system("cls");
 
-                cout << "\nBooking found and guest checked in\n";
+                cout << "\nBooking found and guest checked in\n\n";
 
                 return vec;   
              
@@ -398,7 +390,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
             else{
 
                 if (minusOrPlus == 0){
-                    if (vec[mid].theKey > newCurSecs){
+                    if (vec[mid].theKey >= newCurSecs){
                         minusOrPlus = 1;
                     }
 
@@ -455,7 +447,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
         } */
 
         system("cls");
-        cout << "\nBooking not found\n";
+        cout << "Booking not found\n\n";
 
         return vec;
     };
@@ -477,15 +469,35 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
     cout << "\nInsert MONTH in MM format!: ";
     cin >> tempMonth;
 
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempMonth = 13;   
+        cout << "\nInvalid MONTH! Try again! Insert MONTH in MM format!: ";              
+        cin >> tempMonth;
+    }     
+
     cout << "\nInsert DATE in DD format!: ";
-    cin >> tempDate;    
+    cin >> tempDate;
+
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempDate = 34;   
+        cout << "\nInvalid DATE! Try again! Insert DATE in DD format!: ";              
+        cin >> tempDate;
+    }         
 
     cout << "\nInsert YEAR in YYYY format!: ";
-    cin >> tempYear;     
+    cin >> tempYear;
 
-    //tempYear = 2022;
-    //tempMonth = 11;
-    //tempDate = 07;
+    while (cin.fail()) 
+    {
+        cin.clear(); cin.ignore(INT_MAX,'\n');
+        tempYear = 9999;   
+        cout << "\nInvalid YEAR! Try again! Insert YEAR in YYYY format!: ";              
+        cin >> tempYear;
+    }          
 
     string theDateElems[5];
 
@@ -505,10 +517,6 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
     }
     else{
 
-        //double curSeconds = retrieveCurSec();
-
-        //int newCurSecs = int(curSeconds);
-
         double curSeconds = retrieveBookSec(curYear,curMonth,curDay);
 
         int newCurSecs = int(curSeconds);
@@ -516,9 +524,6 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
         double bookingSecs = retrieveBookSec(tempYear,tempMonth,tempDate);
 
         int newBookingSecs = int(bookingSecs);
-
-        //cout << "Current secs" << newCurSecs;
-        //cout << "\nbooking secs\n" << newBookingSecs;
 
         if (newBookingSecs < newCurSecs){
 
@@ -551,6 +556,13 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
 
                 int minusOrPlus = 0;
 
+                int tempMid = mid;
+
+                while (vec[tempMid+1].theKey == vec[tempMid].theKey){
+                    tempMid = tempMid + 1;
+                    mid = mid + 1;
+                }                
+
                 while (mid != -1 && mid != vectorSize + 1){
 
                     if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
@@ -561,7 +573,7 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
 
                     if (elementFound == 0){
                         if (minusOrPlus == 0){
-                            if (vec[mid].theKey > newBookingSecs){
+                            if (vec[mid].theKey >= newBookingSecs){
                                 minusOrPlus = 1;
                             }
 
@@ -588,7 +600,7 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
 
                     else{
                             if (minusOrPlus == 0){
-                            if (vec[mid].theKey > newBookingSecs){
+                            if (vec[mid].theKey >= newBookingSecs){
 
                                 minusOrPlus = 1;
                             }
@@ -645,14 +657,9 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
                 c = tolower(c);
                 }
 
-
-                //tempName = "Jay";
-
                 tempCheckedIn = false;
 
                 vec.push_back(Records(newBookingSecs, tempDate, tempMonth, tempYear, tempName, tempCheckedIn));
-                //vec.push_back(Records(newBookingSecs - 100, 6, tempMonth, tempYear, "Tom", tempCheckedIn));
-                //vec.push_back(Records(newBookingSecs - 350, 5, tempMonth, tempYear, "Harry", tempCheckedIn));
 
                 sort(vec.begin(), vec.end(), compareKeys());
 
@@ -661,17 +668,13 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
                 cout << "Added booking to database: " << tempDate << "-" << tempMonth << "-" << tempYear <<
                 "-" << tempName << "\n\n"; 
 
-                //for (const auto& element : vec){
-                //    cout << "\n" << element.theKey << "\n";
-                //};
-
                 return vec;
             }
 
             else{
                 system("cls");
 
-                cout << "\nNo bookable rooms!\n\n";
+                cout << "No bookable rooms!\n\n";
 
                 return vec;
             }
