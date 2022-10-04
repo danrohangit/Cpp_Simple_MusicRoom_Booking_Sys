@@ -9,14 +9,15 @@
 #include <algorithm>;
 #include <stdlib.h>;
 #include <cmath>;
+#include <cctype>;
+#include <clocale>;
 
 //https://www.javatpoint.com/how-to-split-strings-in-cpp
 //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects
 
 // # TODO
 
-// Fix while operators for check in and see details
-// Supposed to be && not || dont know why
+// Fix check in
 
 using namespace std;
 
@@ -212,6 +213,8 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
     if (first > vectorSize){
         system("cls");
         cout << "\nBooking not found\n";        
+
+        return vec;
     }
     else if (vectorSize == 1){
         if (vec[0].theKey == newCurSecs){
@@ -227,13 +230,17 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
                 tempBool = "Yes";
             };
 
-            cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";            
+            cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";
+
+            return vec;            
 
         }
 
         else{
             system("cls");
-            cout << "\nBooking not found\n";             
+            cout << "\nBooking not found\n\n";   
+
+            return vec;          
         };
     }
 
@@ -245,7 +252,7 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
 
         int minusOrPlus = 0;        
 
-        while (mid != -1 || mid != vectorSize + 1){
+        while (mid != -1 && mid != vectorSize + 1){
 
             //cout << "\nMid: " << mid << "\n"; 
 
@@ -253,11 +260,10 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
 
                 system("cls");
 
-                cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << "\n";
+                cout << "\nDate: " << vec[0].dD << " Month: " << vec[0].mM << " Year: " << vec[0].yY << " Name: " << vec[0].name << " Checked-In: " << vec[0].checkedIn << "\n";
 
                 return vec;   
-
-                break;             
+             
             }
 
             else{
@@ -285,7 +291,9 @@ vector<Records> displayBooking(string userOption,vector<Records>vec){
         }
 
         system("cls");
-        cout << "\nBooking not found\n";        
+        cout << "\nBooking not found\n";    
+
+        return vec;    
     };
 
 }
@@ -314,6 +322,11 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
     cout << "\nEnter Name: ";
     cin >> tempName;
 
+    for(auto& c : tempName)
+    {
+    c = tolower(c);
+    }
+
     int vectorSize = vec.size();
 
     int first = 0;
@@ -330,6 +343,8 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
         system("cls");
         cout << "\nBooking not found\n";
+
+        return vec;
     }
 
     else if(vectorSize == 1){
@@ -348,6 +363,8 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
             system("cls");
 
             cout << "\n Booking not found!\n";
+
+            return vec;
         };
     }
     else{
@@ -361,7 +378,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
         int minusOrPlus = 0;
 
-        while (mid != -1 || mid != vectorSize + 1){
+        while (mid != -1 && mid != vectorSize + 1){
 
             cout << "\nMid: " << mid << "\n"; 
 
@@ -375,8 +392,7 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
                 cout << "\nBooking found and guest checked in\n";
 
                 return vec;   
-
-                break;             
+             
             }
 
             else{
@@ -440,6 +456,8 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
         system("cls");
         cout << "\nBooking not found\n";
+
+        return vec;
     };
 }
 
@@ -463,7 +481,7 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
     cin >> tempDate;    
 
     cout << "\nInsert YEAR in YYYY format!: ";
-    cin >> tempYear; 
+    cin >> tempYear;     
 
     //tempYear = 2022;
     //tempMonth = 11;
@@ -478,7 +496,12 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
     int curDay = stoi(theDateElems[2]);
 
     if (tempYear < curYear || tempYear > curYear + 1){
+
+        system("cls");
+
         cout << "\nInvalid Year/Cannot book more than 2 years ahead!!\n\n";
+
+        return vec;
     }
     else{
 
@@ -498,32 +521,160 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
         //cout << "\nbooking secs\n" << newBookingSecs;
 
         if (newBookingSecs < newCurSecs){
-            cout << "\nInvalid Booking Date. Can only book same day or future day\n\n";             
-        }
-        else{
-            cout << "\nInsert Name of Musician: ";
-            cin >> tempName;
-
-            //tempName = "Jay";
-
-            tempCheckedIn = false;
-
-            vec.push_back(Records(newBookingSecs, tempDate, tempMonth, tempYear, tempName, tempCheckedIn));
-            //vec.push_back(Records(newBookingSecs - 100, 6, tempMonth, tempYear, "Tom", tempCheckedIn));
-            //vec.push_back(Records(newBookingSecs - 350, 5, tempMonth, tempYear, "Harry", tempCheckedIn));
-
-            sort(vec.begin(), vec.end(), compareKeys());
 
             system("cls");
 
-            cout << "Added booking to database: " << tempDate << "-" << tempMonth << "-" << tempYear <<
-            "-" << tempName << "\n\n"; 
+            cout << "\nInvalid Booking Date. Can only book same day or future day\n\n";
 
-            //for (const auto& element : vec){
-            //    cout << "\n" << element.theKey << "\n";
-            //};
+            return vec;             
+        }
+        else{
 
-            return vec;
+            int vectorSize = vec.size();
+
+            bool canBeBooked = false;
+
+            if (vectorSize <= 1){
+                canBeBooked = true;
+            }
+
+            else {
+
+                int mid = vectorSize/2;
+                mid = ceil(mid);
+
+                mid = int(mid);
+
+                int elementFound = 0;
+
+                int count = 0;
+
+                int minusOrPlus = 0;
+
+                while (mid != -1 && mid != vectorSize + 1){
+
+                    if (vec[mid].dD == tempDate && vec[mid].mM == tempMonth && vec[mid].yY == tempYear){
+
+                        elementFound = elementFound + 1;   
+                    
+                    }                   
+
+                    if (elementFound == 0){
+                        if (minusOrPlus == 0){
+                            if (vec[mid].theKey > newBookingSecs){
+                                minusOrPlus = 1;
+                            }
+
+                            else{
+                                minusOrPlus = 2;
+                            }
+                        }
+
+                        else{
+
+                            if (minusOrPlus == 1){
+
+                                mid = mid - 1;
+                           
+                            }
+
+                            else{
+
+                                mid = mid + 1;
+
+                            }
+                        }
+                    }
+
+                    else{
+                            if (minusOrPlus == 0){
+                            if (vec[mid].theKey > newBookingSecs){
+
+                                minusOrPlus = 1;
+                            }
+
+                            else{
+
+                                minusOrPlus = 2;
+                            };
+                        }
+
+                        else{
+
+                            if (minusOrPlus == 1){
+
+                                mid = mid - 1;
+
+                                count = count + 1;
+
+                                if (elementFound == 2 || count == 2){
+                                mid = -1;
+                                }                                
+                            }
+
+                            else{
+
+                                mid = mid + 1;
+
+                                count = count + 1;
+
+                                if (elementFound == 2 || count == 2){
+                                mid = -1;
+                                }
+
+                            };
+                        };                           
+                    };
+
+                };
+
+                if (elementFound > 1){
+                    canBeBooked = false;
+                }
+                else{
+                    canBeBooked = true;
+                }                
+            }
+
+            if (canBeBooked == true){
+                cout << "\nInsert Name of Musician: ";
+                cin >> tempName;
+
+                for(auto& c : tempName)
+                {
+                c = tolower(c);
+                }
+
+
+                //tempName = "Jay";
+
+                tempCheckedIn = false;
+
+                vec.push_back(Records(newBookingSecs, tempDate, tempMonth, tempYear, tempName, tempCheckedIn));
+                //vec.push_back(Records(newBookingSecs - 100, 6, tempMonth, tempYear, "Tom", tempCheckedIn));
+                //vec.push_back(Records(newBookingSecs - 350, 5, tempMonth, tempYear, "Harry", tempCheckedIn));
+
+                sort(vec.begin(), vec.end(), compareKeys());
+
+                system("cls");
+
+                cout << "Added booking to database: " << tempDate << "-" << tempMonth << "-" << tempYear <<
+                "-" << tempName << "\n\n"; 
+
+                //for (const auto& element : vec){
+                //    cout << "\n" << element.theKey << "\n";
+                //};
+
+                return vec;
+            }
+
+            else{
+                system("cls");
+
+                cout << "\nNo bookable rooms!\n\n";
+
+                return vec;
+            }
 
         }
 
