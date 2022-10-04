@@ -12,6 +12,7 @@
 #include <cctype>;
 #include <clocale>;
 #include <bits/stdc++.h>;
+#include <sstream>;
 
 //https://www.javatpoint.com/how-to-split-strings-in-cpp
 //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects
@@ -75,6 +76,12 @@ string checkDate(string theDateElems[]){
                     token1 = to_string(i+1);
                 }
             }
+        }
+
+        int found=token1.find('0');
+
+        if (found = 0){
+            token1.erase(0,1);
         }
 
         theDateElems[count] = token1;
@@ -305,9 +312,33 @@ vector<Records> checkInBooking(string userOption,vector<Records>vec){
 
     auto curDateResult = checkDate(theDateElems);
 
-    int curYear = stoi(theDateElems[4]);
-    int curMonth = stoi(theDateElems[1]);
-    int curDay = stoi(theDateElems[2]);
+    string tempTheDateElems4 = theDateElems[4];
+    string tempTheDateElems1 = theDateElems[1];
+    string tempTheDateElems2 = theDateElems[2]; 
+
+    stringstream ss; 
+
+    int curYear;
+    
+    ss << tempTheDateElems4;
+
+    ss >> curYear;
+
+    int curMonth;
+    
+    ss << tempTheDateElems1;
+
+    ss >> curMonth;
+
+    int curDay;
+    
+    ss << tempTheDateElems2;
+
+    ss >> curDay;                  
+
+    //int curYear = stoi(theDateElems[4]);
+    //int curMonth = stoi(theDateElems[1]);
+    //int curDay = stoi(theDateElems[2]);
 
     string tempName;
 
@@ -503,9 +534,33 @@ vector<Records> addBooking(string userOption,vector<Records>vec){
 
     auto curDateResult = checkDate(theDateElems);
 
-    int curYear = stoi(theDateElems[4]);
-    int curMonth = stoi(theDateElems[1]);
-    int curDay = stoi(theDateElems[2]);
+    string tempTheDateElems4 = theDateElems[4];
+    string tempTheDateElems1 = theDateElems[1];
+    string tempTheDateElems2 = theDateElems[2]; 
+
+    stringstream ss; 
+
+    int curYear;
+    
+    ss << tempTheDateElems4;
+
+    ss >> curYear;
+
+    int curMonth;
+    
+    ss << tempTheDateElems1;
+
+    ss >> curMonth;
+
+    int curDay;
+    
+    ss << tempTheDateElems2;
+
+    ss >> curDay;    
+
+    //int curYear = stoi(theDateElems[4]);
+    //int curMonth = stoi(theDateElems[1]);
+    //int curDay = stoi(theDateElems[2]);
 
     if (tempYear < curYear || tempYear > curYear + 1){
 
