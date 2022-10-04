@@ -11,7 +11,7 @@
 #include <cmath>;
 #include <cctype>;
 #include <clocale>;
-#include <bits/stdc++.h>;
+#include <limits.h>
 #include <sstream>;
 
 //https://www.javatpoint.com/how-to-split-strings-in-cpp
